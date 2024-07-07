@@ -1,4 +1,3 @@
-import React from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import {useEffect, useState} from 'react';
@@ -15,8 +14,12 @@ const WebSocketDebuggerForm = () => {
     const [messageContent, setMessageContent] = '';
     const [messages, setMessages] = '';
 
+    /**
+     * Connects to the server.
+     */
     const connect = () => {
         try {
+            /** @type {WebSocket | SockJS} */
             let client;
 
             if (stomp) {
@@ -27,7 +30,7 @@ const WebSocketDebuggerForm = () => {
                 }
 
 
-                let connectHeader = {};
+                let connectHeader: {} = {};
 
                 if (stompConnectHeader.length !== 0) {
                     try {
@@ -72,17 +75,65 @@ const WebSocketDebuggerForm = () => {
                     console.error('Connect error %o', e);
                     // TODO that.error(`Connect error, url = ${that.state.url}`);
                     setConnected(false);
-                }
-
-
+                };
             }
+
+            // client = client;
 
         } catch (error) {
             console.error('Connection error', error);
             //TODO add error message log to the console at the bottom
             return;
         }
-    }
+    };
+
+    /**
+     * Disconnect from the server.
+     */
+
+    /**
+     * Send a message to the server.
+     */
+
+    /**
+     * Subscribe to a destination.
+     */
+
+    /**
+     * Get a Subscriber Callback
+     */
+
+    /**
+     * handle a change in the URL
+     */
+
+    /**
+     * handle a change in the connection type
+     */
+
+    /**
+     *
+     */
+
+    /**
+     * Handle stomp connect header change
+     */
+
+    /**
+     * Handle stomp subscribe destination change
+     */
+
+    /**
+     * Handle stomp send header change
+     */
+
+    /**
+     * Handle stomp send destination change
+     */
+
+    /**
+     * Handle message content change
+     */
 
 }
 
