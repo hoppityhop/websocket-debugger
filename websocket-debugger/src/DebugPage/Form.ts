@@ -12,7 +12,7 @@ const WebSocketDebuggerForm = () => {
     const [stompSendHeader, setStompSendHeader] = '';
     const [stompSendDestination, setStompSendDestination] = '';
     const [messageContent, setMessageContent] = '';
-    const [messages, setMessages] = '';
+    const [messages, setMessages] = [];
 
     /**
      * Connects to the server.
@@ -78,7 +78,7 @@ const WebSocketDebuggerForm = () => {
                 };
             }
 
-            // client = client;
+            this.client = client;
 
         } catch (error) {
             console.error('Connection error', error);
@@ -90,6 +90,29 @@ const WebSocketDebuggerForm = () => {
     /**
      * Disconnect from the server.
      */
+
+    disconnectFromServer = () => {
+        if (!connected) {
+            error('Not connected');
+            return;
+        }
+
+        try {
+            if (stomp) {
+                this.client.disconnect();
+
+            } else {
+                this.client.close();
+            }
+            //TODO log success
+            console.log('Connection successfully closed.');
+            setConnected(false);
+        } catch (error) {
+            console.log('Error closing connection', error);
+            //TODO log error
+            console.log(`Disconnect failed, message: ${error.message}, view the dev console for details.`)
+        }
+    }
 
     /**
      * Send a message to the server.
@@ -134,6 +157,31 @@ const WebSocketDebuggerForm = () => {
     /**
      * Handle message content change
      */
+
+    /**
+     * Display error
+     */
+    const error = (message: string) => {
+        //TODO Develop a more complex error logging function when console is on the page
+        console.log(`_ERROR_: ${message}`);
+    }
+
+    /**
+     * Logging function
+     */
+
+    // const log = (messages) => {
+    //     const length = messages.length;
+    //     const newMessage = messages.slice(0, length);
+    //     newMessage.push(messages);
+    //     setMessages(newMessage);
+    // }
+
+
+    /**
+     * Scroll to the bottom of the log console.
+     */
+
 
 }
 
