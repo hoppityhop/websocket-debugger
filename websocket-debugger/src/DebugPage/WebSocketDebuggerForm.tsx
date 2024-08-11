@@ -1,18 +1,31 @@
+// @ts-nocheck
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import {useEffect, useState} from 'react';
+
+
+const info = (message: string) => {
+    //TODO Develop a more complex logging function when console is on the page
+    console.log(`_INFO_: ${message}`);
+}
+
+const error = (message: string) => {
+    //TODO Develop a more complex error logging function when console is on the page
+    console.log(`_ERROR_: ${message}`);
+}
+
 
 const WebSocketDebuggerForm = () => {
     const [connected, setConnected] = useState(false);
     const [sockjs, setSockjs] = useState(false);
     const [stomp, setStomp] = useState(false);
-    const [url, setUrl] = '';
-    const [stompConnectHeader, setStompConnectHeader] = '';
-    const [stompSubscribeDestination, setStompSubscribeDestination] = '';
-    const [stompSendHeader, setStompSendHeader] = '';
-    const [stompSendDestination, setStompSendDestination] = '';
-    const [messageContent, setMessageContent] = '';
-    const [messages, setMessages] = [];
+    const [url, setUrl] = useState('');
+    const [stompConnectHeader, setStompConnectHeader] = useState('');
+    const [stompSubscribeDestination, setStompSubscribeDestination] = useState('');
+    const [stompSendHeader, setStompSendHeader] = useState('');
+    const [stompSendDestination, setStompSendDestination] = useState('');
+    const [messageContent, setMessageContent] = useState('');
+    const [messages, setMessages] = useState([]);
 
     /**
      * Connects to the server.
@@ -107,7 +120,7 @@ const WebSocketDebuggerForm = () => {
             //TODO log success
             console.log('Connection successfully closed.');
             setConnected(false);
-        } catch (error) {
+        } catch (error: any) {
             console.log('Error closing connection', error);
             //TODO log error
             console.log(`Disconnect failed, message: ${error.message}, view the dev console for details.`)
@@ -158,6 +171,13 @@ const WebSocketDebuggerForm = () => {
      * Handle message content change
      */
 
+    /** Log info */
+
+    // const info = (message: string) => {
+    //     //TODO Develop a more complex logging function when console is on the page
+    //     console.log(`_INFO_: ${message}`);
+    // }
+
     /**
      * Display error
      */
@@ -170,19 +190,25 @@ const WebSocketDebuggerForm = () => {
      * Logging function
      */
 
-    // const log = (messages) => {
-    //     const length = messages.length;
-    //     const newMessage = messages.slice(0, length);
-    //     newMessage.push(messages);
-    //     setMessages(newMessage);
-    // }
+    const log = (messages) => {
+        const length = messages.length;
+        const newMessage = messages.slice(0, length);
+        newMessage.push(messages);
+        setMessages(newMessage);
+    }
 
 
     /**
      * Scroll to the bottom of the log console.
      */
 
+    return (
+        <div>
+        </div>
+
+    )
 
 }
 
 export default WebSocketDebuggerForm;
+export {info, error};
