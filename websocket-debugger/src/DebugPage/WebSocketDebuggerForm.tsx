@@ -203,9 +203,12 @@ const WebSocketDebuggerForm = () => {
      */
 
     return (
-        <div>
-        </div>
-
+        <>
+            <h1>WebSocket Connection</h1>
+            <div>
+                dfjhsdfsdjfsdf
+            </div>
+        </>
     )
 
 }
