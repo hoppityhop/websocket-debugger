@@ -1,4 +1,6 @@
 import {error, info} from './WebSocketDebuggerForm';
+import SockJS from "sockjs-client";
+
 
 describe('info function', () => {
 
@@ -20,18 +22,18 @@ describe('info function', () => {
 
     it('should log nothing if the message is empty', () => {
 
-            //Mock console.log
-            const logSpy = jest.spyOn(console, 'log').mockImplementation();
+        //Mock console.log
+        const logSpy = jest.spyOn(console, 'log').mockImplementation();
 
-            const testMessage = "";
-            info(testMessage);
+        const testMessage = "";
+        info(testMessage);
 
-            //Assert that console.log was not called
-            expect(logSpy).toHaveBeenCalled();
-            expect(logSpy).toHaveBeenCalledTimes(1);
-            expect(logSpy).toHaveBeenCalledWith("_INFO_: ");
+        //Assert that console.log was not called
+        expect(logSpy).toHaveBeenCalled();
+        expect(logSpy).toHaveBeenCalledTimes(1);
+        expect(logSpy).toHaveBeenCalledWith("_INFO_: ");
 
-            logSpy.mockRestore();
+        logSpy.mockRestore();
     })
 
 

@@ -16,7 +16,7 @@ const DebugPageUI = () => {
     return (
         <>
             {/*Make a div aligned generally to the left*/}
-            <div style={{width: '50vw', textAlign: "left"}}>
+            <div style={{width: '50vw', textAlign: "left", height: '100%'}}>
                 <h2>WebSocket Connection</h2>
                 <Divider/>
                 <br/>
@@ -61,9 +61,9 @@ const DebugPageUI = () => {
                     <Grid xs={8}>
                         <TextField
                             fullWidth={true}
-                            multiline
-                            rows={8}
-                            maxRows={10}
+                            // multiline
+                            // rows={8}
+                            // maxRows={10}
                             placeholder={
                                 `
    {
@@ -92,6 +92,63 @@ const DebugPageUI = () => {
                         <Button variant="contained"
                                 sx={{my: 1, marginLeft: '15%'}}>
                             Subscribe
+                        </Button>
+                    </Grid>
+                </Grid>
+                <br/>
+
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth={true}
+                            // multiline
+                            // rows={8}
+                            // maxRows={10}
+                            placeholder={
+                                `
+   {
+        "header1" : "value",
+        "header2" : "value",
+        ...
+   }`}
+                            InputLabelProps={{shrink: true}}
+                            label={"Message Headers (JSON String)"}
+
+                        />
+                    </Grid>
+                </Grid>
+                <br/>
+                <Grid container>
+                    <Grid xs={6}>
+                        <TextField
+                            fullWidth
+                            label={"Send Destination"}
+                            placeholder={"/topic/fake"}
+                            InputLabelProps={{shrink: true}}
+                        />
+                    </Grid>
+                    <Grid xs={1}></Grid>
+                </Grid>
+                <br/>
+                <Divider/>
+                <br/>
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth={true}
+                            rows={8}
+                            maxRows={10}
+                            placeholder={
+                                `Message to send to the server`}
+                            InputLabelProps={{shrink: true}}
+                            label={"Message Content"}
+
+                        />
+                    </Grid>
+                    <Grid xs={4}>
+                        <Button variant="contained"
+                                sx={{my: 1, marginLeft: '15%'}}>
+                            Send
                         </Button>
                     </Grid>
                 </Grid>

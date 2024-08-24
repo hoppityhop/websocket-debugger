@@ -30,7 +30,7 @@ const WebSocketDebuggerForm = () => {
     /**
      * Connects to the server.
      */
-    const connect = () => {
+    export const connect = () => {
         try {
             /** @type {WebSocket | SockJS} */
             let client;
@@ -131,60 +131,139 @@ const WebSocketDebuggerForm = () => {
      * Send a message to the server.
      */
 
+    export const sendMessage = () => {
+        try {
+            if (stomp) {
+                let sendHeader: {} = {};
+
+                if (stompSendDestination.length === 0) {
+                    error('No destination specified');
+                    return;
+                }
+
+                if (stompSendHeader.length !== 0) {
+                    try {
+                        sendHeader = JSON.parse(stompSendHeader);
+                    } catch (error) {
+                        console.error(`Invalid JSON for the message header`, error);
+                        error(`JSON format error for the message header: ${stompSendHeader}`);
+                        return;
+                    }
+                }
+
+                this.client.send(stompSendDestination, sendHeader, messageContent);
+                info(`SEND STOMP message to ${stompSendDestination}, headers: ${stompSendHeader}, content: ${messageContent}`);
+            } else {
+                this.client.send(messageContent);
+                info(`SEND message: ${messageContent}`);
+            }
+        } catch (error) {
+            console.error('Error sending message', error);
+            //TODO log error
+            error(`Error sending message, message: ${error.message}, view the dev console for details.`)
+        }
+    }
+
     /**
      * Subscribe to a destination.
      */
 
-    /**
-     * Get a Subscriber Callback
-     */
+    const subscribe = () => {
+        if (stompSubscribeDestination.length === 0) {
+            error('No destination specified');
+            return;
+        }
 
-    /**
-     * handle a change in the URL
-     */
+        if (!stomp) {
+            error('Not a STOMP connection');
+        }
 
-    /**
-     * handle a change in the connection type
-     */
+        if (!connected) {
+            error('Not connected');
+            return;
+        }
 
-    /**
-     *
-     */
+        try {
+            this.client.subscribe(stompSubscribeDestination, getCallback(stompSubscribeDestination));
+            info(`SUBSCRIBE to ${stompSubscribeDestination} was successful`);
+        } catch (e) {
+            console.error('Error subscribing', e);
+            error(`Subscribe destination ${stompSubscribeDestination} failed, message: ${e.message}, view the dev console for details.`);
+        }
+    };
+}
+
+/**
+ * Get a Subscriber Callback
+ */
+
+const getCallback = (destination) => {
+    return content => {
+        info(`RECEIVE message from ${destination}, content: ${content}`);
+    }
+}
+
+
+/**
+ * handle a change in the URL
+ */
+
+
+const handleUrlChange = e => {
+    setUrl(e.target.value);
+}
+
+
+/**
+ * handle a change in the connection type
+ */
+
+const handleConnectionTypeChange = (e) => {
+    let sockjs = false;
+    let stomp = false;
+    for (const t of e) {
+        if (t === 'SockJS') {
+            sockjs = true;
+        } else if (t === 'STOMP') {
+            stomp = true;
+        }
+    }
+
 
     /**
      * Handle stomp connect header change
      */
 
+    const handleStompConnectHeaderChange = e => {
+        setStompConnectHeader(e.target.value);
+    }
+
     /**
      * Handle stomp subscribe destination change
      */
-
+    const handleStompSubscribeDestinationChange = e => {
+        setStompSubscribeDestination(e.target.value);
+    }
     /**
      * Handle stomp send header change
      */
+    const handleStompSendHeaderChange = e => {
+        setStompSendHeader(e.target.value);
+    }
 
     /**
      * Handle stomp send destination change
      */
-
+    const handleStompSendDestinationChange = e => {
+        setStompSendDestination(e.target.value);
+    }
     /**
      * Handle message content change
      */
-
-    /** Log info */
-
-    // const info = (message: string) => {
-    //     //TODO Develop a more complex logging function when console is on the page
-    //     console.log(`_INFO_: ${message}`);
-    // }
-
-    /**
-     * Display error
-     */
-    const error = (message: string) => {
-        //TODO Develop a more complex error logging function when console is on the page
-        console.log(`_ERROR_: ${message}`);
+    const handleMessageContentChange = e => {
+        setMessageContent(e.target.value);
     }
+
 
     /**
      * Logging function
@@ -214,4 +293,4 @@ const WebSocketDebuggerForm = () => {
 }
 
 export default WebSocketDebuggerForm;
-export {info, error};
+export {info, error, connect};
