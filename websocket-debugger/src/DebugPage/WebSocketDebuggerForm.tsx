@@ -1,7 +1,15 @@
 // @ts-nocheck
-import SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client/dist/sockjs';
 import Stomp from 'stompjs';
 import {useEffect, useState} from 'react';
+import {
+    Button, Checkbox,
+    Divider,
+    FormControlLabel,
+    FormGroup,
+    TextField
+} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 
 
 const info = (message: string) => {
@@ -26,11 +34,12 @@ const WebSocketDebuggerForm = () => {
     const [stompSendDestination, setStompSendDestination] = useState('');
     const [messageContent, setMessageContent] = useState('');
     const [messages, setMessages] = useState([]);
+    const [sockClient, setSockClient] = useState(null);
 
     /**
      * Connects to the server.
      */
-    export const connect = () => {
+    const connect = () => {
         try {
             /** @type {WebSocket | SockJS} */
             let client;
@@ -91,8 +100,7 @@ const WebSocketDebuggerForm = () => {
                 };
             }
 
-            this.client = client;
-
+            setSockClient(client);
         } catch (error) {
             console.error('Connection error', error);
             //TODO add error message log to the console at the bottom
@@ -104,7 +112,7 @@ const WebSocketDebuggerForm = () => {
      * Disconnect from the server.
      */
 
-    disconnectFromServer = () => {
+    const disconnectFromServer = () => {
         if (!connected) {
             error('Not connected');
             return;
@@ -131,7 +139,7 @@ const WebSocketDebuggerForm = () => {
      * Send a message to the server.
      */
 
-    export const sendMessage = () => {
+    const sendMessage = () => {
         try {
             if (stomp) {
                 let sendHeader: {} = {};
@@ -191,42 +199,44 @@ const WebSocketDebuggerForm = () => {
             error(`Subscribe destination ${stompSubscribeDestination} failed, message: ${e.message}, view the dev console for details.`);
         }
     };
-}
-
-/**
- * Get a Subscriber Callback
- */
-
-const getCallback = (destination) => {
-    return content => {
-        info(`RECEIVE message from ${destination}, content: ${content}`);
-    }
-}
 
 
-/**
- * handle a change in the URL
- */
+    /**
+     * Get a Subscriber Callback
+     */
 
-
-const handleUrlChange = e => {
-    setUrl(e.target.value);
-}
-
-
-/**
- * handle a change in the connection type
- */
-
-const handleConnectionTypeChange = (e) => {
-    let sockjs = false;
-    let stomp = false;
-    for (const t of e) {
-        if (t === 'SockJS') {
-            sockjs = true;
-        } else if (t === 'STOMP') {
-            stomp = true;
+    const getCallback = (destination) => {
+        return content => {
+            info(`RECEIVE message from ${destination}, content: ${content}`);
         }
+    }
+
+
+    /**
+     * handle a change in the URL
+     */
+
+
+    const handleUrlChange = e => {
+        setUrl(e.target.value);
+    }
+
+
+    /**
+     * handle a change in the connection type
+     */
+
+    const handleConnectionTypeChange = (e) => {
+
+        console.log(e.target.value)
+
+
+        if (e.target.value === 'SockJS') {
+            setSockjs(!sockjs);
+        } else if (e.target.value === 'STOMP') {
+            setStomp(!stomp);
+        }
+
     }
 
 
@@ -283,14 +293,67 @@ const handleConnectionTypeChange = (e) => {
 
     return (
         <>
-            <h1>WebSocket Connection</h1>
-            <div>
-                dfjhsdfsdjfsdf
+            <div style={{width: '50vw', textAlign: "left", height: "100%"}}>
+                <h2>WebSocket Connection</h2>
+                <Divider/>
+                <br/>
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth
+                            required
+                            label={"WebSocket URL"}
+                            placeholder={`"ws://" for raw WebSocket or "http:// or https://" for SockJS`}
+                            InputLabelProps={{shrink: true}}
+                            onChange={handleUrlChange}
+                        />
+                    </Grid>
+                    <Grid xs={4}>
+                        <Button variant="contained"
+
+                                sx={{my: 1, marginLeft: '15%'}}
+                                onClick={connect}
+                        >
+
+                            Connect
+                        </Button>
+                    </Grid>
+                </Grid>
+                <br/>
+                <Grid container>
+                    <Grid xs={3}>
+                        <b>Connection Type</b>
+                    </Grid>
+
+                    <FormGroup row>
+                        <FormControlLabel control={<Checkbox
+
+                            checked={stomp}
+                            onChange={handleConnectionTypeChange}
+                            disabled={connected}
+                            value="STOMP"
+                        />}
+                                          label={"STOMP"}/>
+
+                        <FormControlLabel control={<Checkbox
+
+                            checked={sockjs}
+                            onChange={handleConnectionTypeChange}
+                            disabled={connected}
+                            value="SockJS"
+                        />}
+                                          label={"SockJS"}/>
+                    </FormGroup>
+                </Grid>
+
             </div>
         </>
     )
 
 }
 
+
 export default WebSocketDebuggerForm;
-export {info, error, connect};
+export {
+    info, error
+};
