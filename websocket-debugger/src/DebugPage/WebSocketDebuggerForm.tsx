@@ -11,16 +11,9 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
+import "./WebSocketDebuggerForm.less";
 
-const info = (message: string) => {
-    //TODO Develop a more complex logging function when console is on the page
-    console.log(`_INFO_: ${message}`);
-}
-
-const error = (message: string) => {
-    //TODO Develop a more complex error logging function when console is on the page
-    console.log(`_ERROR_: ${message}`);
-}
+import dummyMessages from "../testData/messages"
 
 
 const WebSocketDebuggerForm = () => {
@@ -67,6 +60,7 @@ const WebSocketDebuggerForm = () => {
 
                 client.connect(connectHeader, () => {
                     setConnected(true);
+                    info(`Connection to STOMP server was successful, URL = ${url}, headers = ${stompConnectHeader}`);
                     //TODO print success with url, connectHeader
                     //TODO What other content in the success log?
                 });
@@ -84,7 +78,8 @@ const WebSocketDebuggerForm = () => {
 
                 client.onopen = (e: Event) => {
                     console.debug('Connect success %o', e);
-                    // TODO that.info(`Connect success, url = ${that.state.url}`);
+                    // TODO that.
+                    info(`Connect success, url = ${url}`);
                     setConnected(true)
                 };
 
@@ -159,10 +154,10 @@ const WebSocketDebuggerForm = () => {
                     }
                 }
 
-                this.client.send(stompSendDestination, sendHeader, messageContent);
+                sockClient.send(stompSendDestination, sendHeader, messageContent);
                 info(`SEND STOMP message to ${stompSendDestination}, headers: ${stompSendHeader}, content: ${messageContent}`);
             } else {
-                this.client.send(messageContent);
+                sockClient.send(messageContent);
                 info(`SEND message: ${messageContent}`);
             }
         } catch (error) {
@@ -192,7 +187,7 @@ const WebSocketDebuggerForm = () => {
         }
 
         try {
-            this.client.subscribe(stompSubscribeDestination, getCallback(stompSubscribeDestination));
+            sockClient.subscribe(stompSubscribeDestination, getCallback(stompSubscribeDestination));
             info(`SUBSCRIBE to ${stompSubscribeDestination} was successful`);
         } catch (e) {
             console.error('Error subscribing', e);
@@ -275,15 +270,28 @@ const WebSocketDebuggerForm = () => {
     }
 
 
+    const info = (message: string) => {
+        //TODO Develop a more complex logging function when console is on the page
+        console.log(`_INFO_: ${message}`);
+        log(`_INFO_: ${message}`);
+    }
+
+    const error = (message: string) => {
+        //TODO Develop a more complex error logging function when console is on the page
+        log(`_ERROR_: ${message}`);
+    }
+
+
     /**
      * Logging function
      */
 
     const log = (messages) => {
         const length = messages.length;
-        const newMessage = messages.slice(0, length);
-        newMessage.push(messages);
-        setMessages(newMessage);
+        const newMessages = messages.slice(0, length);
+        console.log(newMessage);
+        newMessages.push(messages);
+        setMessages(newMessages);
     }
 
 
@@ -293,7 +301,11 @@ const WebSocketDebuggerForm = () => {
 
     return (
         <>
-            <div style={{width: '50vw', textAlign: "left", height: "100%"}}>
+            <div style={{
+                width: '50vw',
+                textAlign: "left",
+                height: "100%"
+            }}>
                 <h2>WebSocket Connection</h2>
                 <Divider/>
                 <br/>
@@ -381,7 +393,7 @@ const WebSocketDebuggerForm = () => {
         ...
    }`}
                             // InputLabelProps={{shrink: true}}
-                            label={"Connection Headers (JSON String)"}
+                            label={"STOMP Connection Headers (JSON String)"}
                             onChange={handleStompConnectHeaderChange}
                         />
                     </Grid>
@@ -391,7 +403,7 @@ const WebSocketDebuggerForm = () => {
                     <Grid xs={6}>
                         <TextField
                             fullWidth
-                            label={"Subscription Destination"}
+                            label={"STOMP Subscription Destination"}
                             placeholder={"/topic/fake"}
                             InputLabelProps={{shrink: true}}
                             onChange={handleStompSubscribeDestinationChange}
@@ -408,7 +420,98 @@ const WebSocketDebuggerForm = () => {
                         </Button>
                     </Grid>
                 </Grid>
+                <br/>
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth={true}
+                            multiline={true}
+                            rows={4}
+                            maxRows={10}
+                            placeholder={
+                                `
+   {
+        "header1" : "value",
+        "header2" : "value",
+        ...
+   }`}
+                            // InputLabelProps={{shrink: true}}
+                            label={"STOMP Message Headers (JSON String)"}
+                            onChange={handleStompSendHeaderChange}
+                        />
+                    </Grid>
+                </Grid>
+                <br/>
+                <Grid container>
+                    <Grid xs={6}>
+                        <TextField
+                            fullWidth
+                            label={"STOMP Send Destination"}
+                            placeholder={"/app/test"}
+                            InputLabelProps={{shrink: true}}
+                            onChange={handleStompSubscribeDestinationChange}
+                        />
+                    </Grid>
+                </Grid>
+                <br/>
+                <Divider/>
+
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth={true}
+                            label={"Message Content"}
+                            placeholder={"Message content in string form"}
+                            InputLabelProps={{shrink: true}}
+                            onChange={handleMessageContentChange}
+                        ></TextField>
+
+                    </Grid>
+                    <Grid xs={3}>
+                        <Button variant="contained"
+                                sx={{my: 1, marginLeft: '15%'}}
+                                onClick={subscribe}
+                                value={stompSubscribeDestination}
+                        >
+                            SEND MESSAGE
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <br/>
+                <Divider/>
+
+                <div
+                    className={"output"}
+                >
+                    <div className={"window"}>
+                        <div className={"body"}>
+                        <pre>
+                            <div className={"comment"}># console output</div>
+
+                            {dummyMessages.length == 0 &&
+                                <div>$ <span className={"pulse"}>_</span></div>}
+
+                            {messages.map((m, index) => <div key={index}>
+
+                                    $&nbsp;
+                                    <span
+                                        className={"command"}>
+                                    {m.message}
+                                </span>
+
+                                </div>
+                            )}
+
+                        </pre>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
+
+
         </>
     )
 
@@ -416,6 +519,3 @@ const WebSocketDebuggerForm = () => {
 
 
 export default WebSocketDebuggerForm;
-export {
-    info, error
-};
