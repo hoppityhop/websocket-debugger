@@ -120,10 +120,10 @@ const WebSocketDebuggerForm = () => {
 
         try {
             if (stomp) {
-                this.client.disconnect();
+                sockClient.disconnect();
 
             } else {
-                this.client.close();
+                sockClient.close();
             }
             //TODO log success
             console.log('Connection successfully closed.');
@@ -306,18 +306,35 @@ const WebSocketDebuggerForm = () => {
                             placeholder={`"ws://" for raw WebSocket or "http:// or https://" for SockJS`}
                             InputLabelProps={{shrink: true}}
                             onChange={handleUrlChange}
+                            disabled={connected}
                         />
                     </Grid>
-                    <Grid xs={4}>
-                        <Button variant="contained"
+                    {connected ?
 
-                                sx={{my: 1, marginLeft: '15%'}}
-                                onClick={connect}
-                        >
 
-                            Connect
-                        </Button>
-                    </Grid>
+                        (
+                            <Grid xs={4}>
+                                <Button variant="contained"
+                                        sx={{my: 1, marginLeft: '15%'}}
+                                        onClick={disconnectFromServer}
+                                >
+
+                                    Disconnect
+                                </Button>
+                            </Grid>)
+
+                        : (<Grid xs={4}>
+                            <Button variant="contained"
+
+                                    sx={{my: 1, marginLeft: '15%'}}
+                                    onClick={connect}
+                            >
+
+                                Connect
+                            </Button>
+                        </Grid>)
+
+                    }
                 </Grid>
                 <br/>
                 <Grid container>
@@ -345,7 +362,52 @@ const WebSocketDebuggerForm = () => {
                                           label={"SockJS"}/>
                     </FormGroup>
                 </Grid>
-
+                <br/>
+                <h2>STOMP Connection</h2>
+                <Divider/>
+                <br/>
+                <Grid container>
+                    <Grid xs={8}>
+                        <TextField
+                            fullWidth={true}
+                            multiline={true}
+                            rows={4}
+                            maxRows={10}
+                            placeholder={
+                                `
+   {
+        "header1" : "value",
+        "header2" : "value",
+        ...
+   }`}
+                            // InputLabelProps={{shrink: true}}
+                            label={"Connection Headers (JSON String)"}
+                            onChange={handleStompConnectHeaderChange}
+                        />
+                    </Grid>
+                </Grid>
+                <br/>
+                <Grid container>
+                    <Grid xs={6}>
+                        <TextField
+                            fullWidth
+                            label={"Subscription Destination"}
+                            placeholder={"/topic/fake"}
+                            InputLabelProps={{shrink: true}}
+                            onChange={handleStompSubscribeDestinationChange}
+                        />
+                    </Grid>
+                    <Grid xs={1}></Grid>
+                    <Grid xs={2}>
+                        <Button variant="contained"
+                                sx={{my: 1, marginLeft: '15%'}}
+                                onClick={subscribe}
+                                value={stompSubscribeDestination}
+                        >
+                            Subscribe
+                        </Button>
+                    </Grid>
+                </Grid>
             </div>
         </>
     )
