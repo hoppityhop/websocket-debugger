@@ -14,6 +14,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import "./WebSocketDebuggerForm.less";
 
 import dummyMessages from "../testData/messages"
+import {send} from "vite";
 
 
 const WebSocketDebuggerForm = () => {
@@ -84,12 +85,12 @@ const WebSocketDebuggerForm = () => {
                 };
 
                 client.onmessage = (e: MessageEvent) => {
-                    console.debug('Receive message %o', e);
-                    // TODO that.info(`Receive message: ${e.data}`);
+                    console.log('Receive message %o', e);
+                    info(`Receive message: ${e.data}`);
                 };
 
                 client.onerror = (e: Event) => {
-                    console.error('Connect error %o', e);
+                    console.log('Connect error %o', e);
                     // TODO that.error(`Connect error, url = ${that.state.url}`);
                     setConnected(false);
                 };
@@ -286,14 +287,15 @@ const WebSocketDebuggerForm = () => {
      * Logging function
      */
 
-    const log = (messages) => {
-        const length = messages.length;
-        const newMessages = messages.slice(0, length);
-        console.log(newMessage);
-        newMessages.push(messages);
-        setMessages(newMessages);
-    }
+    const log = (newMessage) => {
+        setMessages((messages) => [...messages, newMessage]);
 
+        // const length = messages.length;
+        // const newMessageArray = messages.slice(0, length);
+        // console.log(newMessage);
+        // newMessageArray.push(newMessage);
+        // setMessages(newMessageArray);
+    }
 
     /**
      * Scroll to the bottom of the log console.
@@ -449,7 +451,7 @@ const WebSocketDebuggerForm = () => {
                             label={"STOMP Send Destination"}
                             placeholder={"/app/test"}
                             InputLabelProps={{shrink: true}}
-                            onChange={handleStompSubscribeDestinationChange}
+                            onChange={handleStompSendDestinationChange}
                         />
                     </Grid>
                 </Grid>
@@ -470,8 +472,8 @@ const WebSocketDebuggerForm = () => {
                     <Grid xs={3}>
                         <Button variant="contained"
                                 sx={{my: 1, marginLeft: '15%'}}
-                                onClick={subscribe}
-                                value={stompSubscribeDestination}
+                                onClick={sendMessage}
+                                value={stompSendDestination}
                         >
                             SEND MESSAGE
                         </Button>
@@ -489,7 +491,7 @@ const WebSocketDebuggerForm = () => {
                         <pre>
                             <div className={"comment"}># console output</div>
 
-                            {dummyMessages.length == 0 &&
+                            {messages.length == 0 &&
                                 <div>$ <span className={"pulse"}>_</span></div>}
 
                             {messages.map((m, index) => <div key={index}>
@@ -497,7 +499,7 @@ const WebSocketDebuggerForm = () => {
                                     $&nbsp;
                                     <span
                                         className={"command"}>
-                                    {m.message}
+                                    {m}
                                 </span>
 
                                 </div>
