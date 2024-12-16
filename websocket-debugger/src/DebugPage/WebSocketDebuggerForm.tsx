@@ -306,6 +306,8 @@ const WebSocketDebuggerForm = () => {
             <div style={{
                 width: '50vw',
                 textAlign: "left",
+                display: "flex",
+                flexDirection: "column",
                 height: "100%"
             }}>
                 <h2>WebSocket Connection</h2>

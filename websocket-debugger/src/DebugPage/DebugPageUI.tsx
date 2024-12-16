@@ -16,7 +16,10 @@ const DebugPageUI = () => {
     return (
         <>
             {/*Make a div aligned generally to the left*/}
-            <div style={{width: '50vw', textAlign: "left", height: '100%'}}>
+            <div style={{
+                // width: '50vw',
+                textAlign: "left",
+                height: '100%'}}>
                 <h2>WebSocket Connection</h2>
                 <Divider/>
                 <br/>
