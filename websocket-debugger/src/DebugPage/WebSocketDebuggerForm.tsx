@@ -12,10 +12,7 @@ import {
 import Grid from "@mui/material/Unstable_Grid2";
 
 import "./WebSocketDebuggerForm.less";
-
-import dummyMessages from "../testData/messages"
-import {send} from "vite";
-
+import {testDb} from "../middleware/db_sandbox.ts";
 
 const WebSocketDebuggerForm = () => {
     const [connected, setConnected] = useState(false);
@@ -33,6 +30,14 @@ const WebSocketDebuggerForm = () => {
     /**
      * Connects to the server.
      */
+
+    const onSave = () => {
+        testDb().then((result) => {
+            console.log(result);
+        });
+    }
+
+
     const connect = () => {
         try {
             /** @type {WebSocket | SockJS} */
@@ -354,11 +359,7 @@ const WebSocketDebuggerForm = () => {
                     <Grid xs={2}>
                         <Button variant={"contained"}
                                 sx={{my: 1, marginLeft: '15%'}}
-                                onClick={
-                                    () => {
-                                        console.log("Clicked Save!");
-                                    }
-                                }
+                                onClick={onSave}
 
                         >Save</Button>
                     </Grid>
