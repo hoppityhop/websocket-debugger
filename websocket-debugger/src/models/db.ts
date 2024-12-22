@@ -8,7 +8,7 @@ export const db = new Dexie('SocketsDB') as Dexie & {
 };
 
 db.version(1).stores({
-    sockets: '++id, name, stomp, sockjs, ws'
+    sockets: '++id, name, stomp, sockjs, url, connected'
 });
 
 export type {SocketConfig};

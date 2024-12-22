@@ -1,7 +1,8 @@
 export interface SocketConfig {
     id: number;
+    url: string;
     name: string;
     stomp: boolean;
     sockjs: boolean;
-    ws: boolean;
+    connected: boolean;
 };
