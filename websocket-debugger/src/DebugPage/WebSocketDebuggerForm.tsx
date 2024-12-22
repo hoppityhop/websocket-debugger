@@ -314,7 +314,7 @@ const WebSocketDebuggerForm = () => {
                 <Divider/>
                 <br/>
                 <Grid container>
-                    <Grid xs={8}>
+                    <Grid xs={6}>
                         <TextField
                             fullWidth
                             required
@@ -329,7 +329,7 @@ const WebSocketDebuggerForm = () => {
 
 
                         (
-                            <Grid xs={4}>
+                            <Grid xs={2}>
                                 <Button variant="contained"
                                         sx={{my: 1, marginLeft: '15%'}}
                                         onClick={disconnectFromServer}
@@ -339,7 +339,7 @@ const WebSocketDebuggerForm = () => {
                                 </Button>
                             </Grid>)
 
-                        : (<Grid xs={4}>
+                        : (<Grid xs={2}>
                             <Button variant="contained"
 
                                     sx={{my: 1, marginLeft: '15%'}}
@@ -351,6 +351,19 @@ const WebSocketDebuggerForm = () => {
                         </Grid>)
 
                     }
+                    <Grid xs={2}>
+                        <Button variant={"contained"}
+                                sx={{my: 1, marginLeft: '15%'}}
+                                onClick={
+                                    () => {
+                                        console.log("Clicked Save!");
+                                    }
+                                }
+
+                        >Save</Button>
+                    </Grid>
+
+
                 </Grid>
                 <br/>
                 <Grid container>
